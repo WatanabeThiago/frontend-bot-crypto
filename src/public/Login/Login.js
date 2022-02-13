@@ -6,24 +6,29 @@ function Login() {
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   function onChangeEmail(event) {
-    setEmail(event.target.value); 
+    setEmail(event.target.value);
   }
 
   function onChangePassword(event) {
-    setPassword(event.target.value); 
+    setPassword(event.target.value);
   }
 
   async function onSubmit(event) {
-    const isValid = await doLogin(email, password);
-    console.table({email, password})
-    console.log('Login válido: ',isValid)
-    if (isValid) {
-      history.push("/settings");
-    } else {
-      // TODO: Lógica de erro
-    }
+    console.log("vai enviar");
+    console.table({ email, password });
+    doLogin(email, password)
+      .then((isValid) => {
+        console.log("deu certo");
+        console.table({ isValid });
+        if (isValid) history.push("/settings");
+      })
+      .catch((err) => {
+        console.log({ err });
+        setError(err);
+      });
   }
 
   return (
@@ -82,7 +87,7 @@ function Login() {
                       className="form-control"
                       placeholder="pirocudo@sexo.com"
                       id="email"
-                      autofocus
+                      autoFocus
                       required
                       onChange={onChangeEmail}
                     />
@@ -105,7 +110,7 @@ function Login() {
                       className="form-control"
                       placeholder="*****"
                       id="password"
-                      autofocus
+                      autoFocus
                       required
                       onChange={onChangePassword}
                     />
@@ -129,6 +134,12 @@ function Login() {
                     Sign In
                   </button>
                 </div>
+                {
+                error ? 
+                  <div className="alert alert-danger mt-2">{error}</div>
+                 : 
+                  <React.Fragment></React.Fragment>
+                }
               </form>
             </div>
           </div>
